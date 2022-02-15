@@ -55,7 +55,7 @@ class MissionaryAgent(Agent):
                 dx, dy = random.choice(random_walk_options)                       
         #jezeli brak sasiadow w promieniu to idz losowo
         else:
-            #random walk
+            #random walk tak
             dx, dy = random.choice(random_walk_options)
 
 

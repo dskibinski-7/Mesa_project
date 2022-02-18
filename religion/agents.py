@@ -182,9 +182,13 @@ class UnbelievingAgent(Agent):
                 shuffle_faith = np.random.normal(self.faith, 0.1, 1)
                 if shuffle_faith >= 1:
                     #misjonarz
+                    #procent szans na narodziny misjonarza? bo za duzo ich jest? przemyslec jeszcze
+                    #if random.random() > 0.8:
                     a = MissionaryAgent(self.model.next_id(), self.model, religion_type=self.religion_type)
                     self.model.schedule.add(a)
                     self.model.space.place_agent(a, self.pos)
+                    #else:
+                        
                 elif shuffle_faith <= 0.5:
                     #normalagent
                     #moze zmienic wiare

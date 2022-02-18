@@ -2,6 +2,9 @@ from mesa import Agent
 import random
 import numpy as np
 
+
+#oba agenty moglyby dziedziczyc po jednym typie 
+
 class MissionaryAgent(Agent):
     """ An agent with fixed initial wealth."""
     def __init__(self, unique_id, model):
@@ -86,6 +89,11 @@ class MissionaryAgent(Agent):
         self.give_faith()
         #stazenie sie - w tym przypadku osonik (ok. 70) bedzie zyc 1750 stepow
         self.age -= 0.04
+        #death
+        if self.age < 0:
+            self.model.space.remove_agent(self)
+            self.model.schedule.remove(self)
+            #test
         
         
 class BelieviengAgent(Agent):
@@ -143,10 +151,13 @@ class UnbelievingAgent(Agent):
                 
         if co_believers:
             self.faith += co_believers*0.01
-            if self.faith > 1:
-                self.faith = 1
         else:
             self.faith -= 0.05
+        
+        if self.faith > 1:
+            self.faith = 1
+        elif self.faith <= 0:
+            self.religion_type = 0
                 
                 
     def step(self):
@@ -157,7 +168,9 @@ class UnbelievingAgent(Agent):
         self.establish_faith()
         
         #death
-        # if self.age < 0:
-        #     self.model.
+        if self.age < 0:
+            self.model.space.remove_agent(self)
+            self.model.schedule.remove(self)
+            #test
 
         

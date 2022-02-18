@@ -79,18 +79,13 @@ class MissionaryAgent(Agent):
                     if n.faith > 1:
                         n.faith = 1
                 
-            #test
-            #print("pozycja sasiadow (pod nimi pozycja misjonarza)")
-            #for n in neighbors:
-            #    print(n.pos)
-
-        #print("misjonarz pozycja" +str(self.pos))
             
 
     def step(self):
         self.move()
         self.give_faith()
-        self.age -= 0.01
+        #stazenie sie - w tym przypadku osonik (ok. 70) bedzie zyc 1750 stepow
+        self.age -= 0.04
         
         
 class BelieviengAgent(Agent):
@@ -133,8 +128,36 @@ class UnbelievingAgent(Agent):
         
         #test - zmieniony dx
         self.model.space.move_agent(self, (x+dx, y+dy))
-        #print("niewierzacy pozycja" + str(self.pos))
+
+    #strengthen or weaken your faith - depending on the number of neighbors    
+    def establish_faith(self):
+        neighbors = self.model.space.get_neighbors(
+            self.pos, 
+            radius = 10,
+            include_center = False)        
         
+        co_believers = 0
+        for n in neighbors:
+            if n.religion_type == self.religion_type:
+                co_believers += 1
+                
+        if co_believers:
+            self.faith += co_believers*0.01
+            if self.faith > 1:
+                self.faith = 1
+        else:
+            self.faith -= 0.05
+                
+                
     def step(self):
         self.move()
-        self.age-= 1
+        self.age-= 0.04
+        #w zaleznosci od sasiadow - wiara umacnia sie lub oslabia
+        #potem update z kosciolem?
+        self.establish_faith()
+        
+        #death
+        # if self.age < 0:
+        #     self.model.
+
+        

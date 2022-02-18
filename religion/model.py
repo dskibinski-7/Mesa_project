@@ -22,6 +22,7 @@ class ReligionModel(Model):
             x = self.random.randrange(self.space.width)
             y = self.random.randrange(self.space.height)
             self.space.place_agent(a, (x, y))
+        #create unbelievers
         for i in range(self.num_unbelieving):
             #zwiekszenie unique_id aby sie nie powtarzaly z misjonarzami
             a = UnbelievingAgent(i + self.num_missionaries, self)

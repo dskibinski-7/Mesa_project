@@ -36,10 +36,10 @@ def agent_draw(agent):
     
     return portrayal
 
-canvas = SimpleCanvas(agent_draw, 500, 500)
+canvas = SimpleCanvas(agent_draw, 700, 700)
 
 #dodac chart dominacji religii
 server = ModularServer(ReligionModel,
                        [canvas],
                        "Religion Model",
-                       {"missionaries_N":3, "unbelieving_N":1500, "width":500, "height":500})
+                       {"missionaries_N":3, "unbelieving_N":1500, "width":700, "height":700})

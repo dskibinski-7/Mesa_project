@@ -7,14 +7,14 @@ import numpy as np
 
 class MissionaryAgent(Agent):
     """ An agent with fixed initial wealth."""
-    def __init__(self, unique_id, model):
+    def __init__(self, unique_id, model, religion_type = random.choice([1,2,3])):
         super().__init__(unique_id, model)
         prob_age = 120
         while prob_age > 100:
             prob_age = int(np.random.normal(70, 20, 1))    
         self.age = prob_age 
         self.faith = 1 #
-        self.religion_type = random.choice([1,2,3])
+        self.religion_type = religion_type
         
 
     def move(self):
@@ -89,11 +89,11 @@ class MissionaryAgent(Agent):
         self.give_faith()
         #stazenie sie - w tym przypadku osonik (ok. 70) bedzie zyc 1750 stepow
         self.age -= 0.04
-        #death
+        
+        #death; no offspring
         if self.age < 0:
             self.model.space.remove_agent(self)
             self.model.schedule.remove(self)
-            #test
         
         
 class BelieviengAgent(Agent):
@@ -119,14 +119,18 @@ class BelieviengAgent(Agent):
 
 
 class UnbelievingAgent(Agent):
-    def __init__(self, unique_id, model):
+    def __init__(self, unique_id, model, faith = 0, religion_type = 0):
         super().__init__(unique_id, model)
         prob_age = 120
         while prob_age > 100:
             prob_age = int(np.random.normal(70, 20, 1))    
         self.age = prob_age 
-        self.faith = 0 #  
-        self.religion_type = 0
+        self.religion_type = religion_type
+        if self.religion_type == 0:
+            self.faith = 0
+        else:
+            self.faith = faith
+        
         
     
     def move(self):
@@ -167,10 +171,37 @@ class UnbelievingAgent(Agent):
         #potem update z kosciolem?
         self.establish_faith()
         
-        #death
+        #death and birth /next pop
         if self.age < 0:
+            #birth of the offspring
+            num_of_childs = np.random.choice([0,1,2])
+            for child in range(num_of_childs):
+                shuffle_faith = np.random.normal(self.faith, 0.1, 1)
+                if shuffle_faith >= 1:
+                    #misjonarz
+                    a = MissionaryAgent(self.model.next_id(), self.model, religion_type=self.religion_type)
+                    self.model.schedule.add(a)
+                    self.model.space.place_agent(a, self.pos)
+                elif shuffle_faith <= 0.5:
+                    #normalagent
+                    #moze zmienic wiare
+                    a = UnbelievingAgent(self.model.next_id(), self.model, faith = shuffle_faith, religion_type = random.choice([0,1,2,3]))
+                    self.model.schedule.add(a)
+                    # Add the agent to a random space place
+                    self.model.space.place_agent(a, self.pos)
+                else:
+                    #normal agent, ta sama wiare
+                    a = UnbelievingAgent(self.model.next_id(), self.model, faith = shuffle_faith, religion_type = self.religion_type)
+                    self.model.schedule.add(a)
+                    # Add the agent to a random space place
+                    self.model.space.place_agent(a, self.pos)
+                
+            
+            #death
             self.model.space.remove_agent(self)
             self.model.schedule.remove(self)
-            #test
+            
+
+        
 
         

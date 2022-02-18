@@ -12,11 +12,12 @@ class ReligionModel(Model):
         self.space = ContinuousSpace(width,height,True)
         self.schedule = RandomActivation(self)
         self.running = True
+        self.current_id = 0
         
         
         # Create missionaries
         for i in range(self.num_missionaries):
-            a = MissionaryAgent(i, self)
+            a = MissionaryAgent(self.next_id(), self)
             self.schedule.add(a)
             # Add the agent to a random space place
             x = self.random.randrange(self.space.width)
@@ -25,7 +26,7 @@ class ReligionModel(Model):
         #create unbelievers
         for i in range(self.num_unbelieving):
             #zwiekszenie unique_id aby sie nie powtarzaly z misjonarzami
-            a = UnbelievingAgent(i + self.num_missionaries, self)
+            a = UnbelievingAgent(self.next_id(), self)
             self.schedule.add(a)
             # Add the agent to a random space place
             x = self.random.randrange(self.space.width)

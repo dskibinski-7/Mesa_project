@@ -7,15 +7,18 @@ import numpy as np
 
 class MissionaryAgent(Agent):
     """ An agent with fixed initial wealth."""
-    def __init__(self, unique_id, model, religion_type = random.choice([1,2,3])):
+    def __init__(self, unique_id, model, religion_type = 0):
         super().__init__(unique_id, model)
         prob_age = 120
         while prob_age > 100:
             prob_age = int(np.random.normal(70, 20, 1))    
         self.age = prob_age 
         self.faith = 1 #
-        self.religion_type = religion_type
-        
+        if religion_type == 0:
+            #nie byl zadeklarowany, wybierz losowo
+            self.religion_type = random.randint(1, 3)
+        else:
+            self.religion_type = religion_type     
 
     def move(self):
         random_walk_options = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,0), (0,1), (1,-1), (1,0), (1,1)]

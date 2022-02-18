@@ -27,7 +27,7 @@ def agent_draw(agent):
         elif agent.religion_type == 3:
             portrayal["Color"] = "Blue"
         else:
-            portrayal["Color"] = "Grey"
+            portrayal["Color"] = "Black"
         portrayal["Shape"] = "circle"
         portrayal["r"] = 1
         portrayal["Filled"] = True

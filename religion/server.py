@@ -11,13 +11,23 @@ def agent_draw(agent):
         portrayal["Shape"] = "circle"
         portrayal["r"] = 25
         portrayal["Filled"] = False
-        portrayal["Color"] = "Red"
+        if agent.religion_type == 1:
+            portrayal["Color"] = "Red"
+        elif agent.religion_type == 2:
+            portrayal["Color"] = "Green"
+        elif agent.religion_type == 3:
+            portrayal["Color"] = "Blue"
+        #portrayal["Color"] = "Red"
         
     elif type(agent) is UnbelievingAgent:
-        if agent.faith > 0:
-            portrayal["Color"] = "Red" 
+        if agent.religion_type == 1:
+            portrayal["Color"] = "Red"
+        elif agent.religion_type == 2:
+            portrayal["Color"] = "Green"
+        elif agent.religion_type == 3:
+            portrayal["Color"] = "Blue"
         else:
-           portrayal["Color"] = "Blue"  
+            portrayal["Color"] = "Grey"
         portrayal["Shape"] = "circle"
         portrayal["r"] = 1
         portrayal["Filled"] = True
@@ -32,4 +42,4 @@ canvas = SimpleCanvas(agent_draw, 500, 500)
 server = ModularServer(ReligionModel,
                        [canvas],
                        "Religion Model",
-                       {"missionaries_N":1, "unbelieving_N":100, "width":500, "height":500})
+                       {"missionaries_N":3, "unbelieving_N":1500, "width":500, "height":500})

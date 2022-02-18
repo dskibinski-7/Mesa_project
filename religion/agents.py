@@ -11,6 +11,7 @@ class MissionaryAgent(Agent):
             prob_age = int(np.random.normal(70, 20, 1))    
         self.age = prob_age 
         self.faith = 1 #
+        self.religion_type = random.choice([1,2,3])
         
 
     def move(self):
@@ -71,9 +72,13 @@ class MissionaryAgent(Agent):
         if len(neighbors) > 1:
             #zwieksz wiare, ale nie wiecej niz 1 (jezeli wiecej niz jeden to moze misjonarz?)
             for n in neighbors:
-                n.faith += np.random.normal(0.5, 0.1, 1)
-                if n.faith > 1:
-                    n.faith = 1
+                #od jakiej wartosci moze zmienic religie (n.faith < 0.3)
+                if n.religion_type == 0 or n.faith < 0.3:
+                    n.faith += np.random.normal(0.5, 0.1, 1)
+                    n.religion_type = self.religion_type
+                    if n.faith > 1:
+                        n.faith = 1
+                
             #test
             #print("pozycja sasiadow (pod nimi pozycja misjonarza)")
             #for n in neighbors:
@@ -118,6 +123,7 @@ class UnbelievingAgent(Agent):
             prob_age = int(np.random.normal(70, 20, 1))    
         self.age = prob_age 
         self.faith = 0 #  
+        self.religion_type = 0
         
     
     def move(self):

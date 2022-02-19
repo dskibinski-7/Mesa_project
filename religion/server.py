@@ -3,7 +3,7 @@ from mesa.visualization.modules import ChartModule
 from mesa.visualization.UserParam import UserSettableParameter
 
 from .model import ReligionModel
-from .agents import MissionaryAgent, BelieviengAgent, UnbelievingAgent
+from .agents import MissionaryAgent, UnbelievingAgent
 from .SimpleContinuousModule import SimpleCanvas
 
 def agent_draw(agent):
@@ -55,6 +55,10 @@ model_params = {
     ),
     "unbelieving_N": UserSettableParameter(
         "slider", "Początkowa liczba ateistów", 1500, 500, 3000
+    ),
+    "give_faith_prob": UserSettableParameter(
+        "slider", "Prawdopodobieństwo przekazania wiary [%]", 100, 10, 100,
+        description="Prawdopodobieństwo, z jakim misjonarzowi uda się nawrócić inną osobę",
     ),
     }
 

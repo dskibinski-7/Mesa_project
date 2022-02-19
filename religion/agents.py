@@ -46,7 +46,7 @@ class MissionaryAgent(Agent):
             if distances_between_missionair_neigh:
                 closest = min(distances_between_missionair_neigh, key=distances_between_missionair_neigh.get)
                 neigh_x, neigh_y = closest.pos
-                #print("Misjonarz nr: " + str(self.unique_id) + "pozycja: " + str(self.pos) + "najblizszy siasiad ma numer " + str(closest.unique_id) + "jego pozycja: " + str(closest.pos))                                               
+            
                 dx, dy = 0, 0
     
                 if neigh_x > missionary_x:
@@ -80,10 +80,13 @@ class MissionaryAgent(Agent):
             for n in neighbors:
                 #od jakiej wartosci moze zmienic religie (n.faith < 0.3)
                 if n.religion_type == 0 or n.faith < 0.3:
-                    n.faith += np.random.normal(0.5, 0.1, 1)
-                    n.religion_type = self.religion_type
-                    if n.faith > 1:
-                        n.faith = 1
+                    #dodatkowe prawodpodobienstwo przekazania wiary
+                    #0.8 jako parametr - prawdoodobienstwo przekazania wiary przez misjo
+                    if random.random() > (1 - self.model.give_faith_prob):
+                        n.faith += np.random.normal(0.5, 0.1, 1)
+                        n.religion_type = self.religion_type
+                        if n.faith > 1:
+                            n.faith = 1
                 
             
 
@@ -99,26 +102,9 @@ class MissionaryAgent(Agent):
             self.model.schedule.remove(self)
         
         
-class BelieviengAgent(Agent):
+class Temple(Agent):
     pass
-    # def __init__(self, unique_id, model):
-    #     super().__init__(unique_id, model)
-    #     prob_age = 120
-    #     while prob_age > 100:
-    #         prob_age = int(np.random.normal(70, 20, 1))    
-    #     self.age = prob_age 
-    #     self.faith = 0 #  
-        
-    
-    # def move(self):
-    #     dx = random.uniform(-1, 1)
-    #     dy = random.uniform(-1, 1)        
-    #     x, y = self.pos
-    #     self.model.space.move_agent(self, (x+dx, y+dy))
-        
-    # def step(self):
-    #     self.move()
-    #     self.age-= 1
+
 
 
 class UnbelievingAgent(Agent):
@@ -148,7 +134,7 @@ class UnbelievingAgent(Agent):
     def establish_faith(self):
         neighbors = self.model.space.get_neighbors(
             self.pos, 
-            radius = 10,
+            radius = 5,
             include_center = False)        
         
         co_believers = 0
@@ -159,7 +145,7 @@ class UnbelievingAgent(Agent):
         if co_believers:
             self.faith += co_believers*0.01
         else:
-            self.faith -= 0.05
+            self.faith -= 0.08
         
         if self.faith > 1:
             self.faith = 1

@@ -3,7 +3,7 @@ from mesa.datacollection import DataCollector
 from mesa.time import RandomActivation
 from mesa.space import ContinuousSpace
 
-from .agents import MissionaryAgent, BelieviengAgent, UnbelievingAgent
+from .agents import MissionaryAgent, UnbelievingAgent
 
 # def compute_religion_1(model):
 #     religion_believiers = {1:0, 2:0, 3:0, 0:0}
@@ -30,13 +30,14 @@ def comp0(model):
 
 class ReligionModel(Model):
     """A model with some number of agents."""
-    def __init__(self, missionaries_N, unbelieving_N, width = 600, height= 600):
+    def __init__(self, missionaries_N, unbelieving_N, width = 600, height= 600, give_faith_prob = 100):
         self.num_missionaries = missionaries_N
         self.num_unbelieving = unbelieving_N
         self.space = ContinuousSpace(width,height,True)
         self.schedule = RandomActivation(self)
         self.running = True
         self.current_id = 0
+        self.give_faith_prob = give_faith_prob/100
 
         
         # Create missionaries

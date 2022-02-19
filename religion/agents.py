@@ -14,6 +14,7 @@ class MissionaryAgent(Agent):
             prob_age = int(np.random.normal(70, 20, 1))    
         self.age = prob_age 
         self.faith = 1 #
+        self.temple_bonus = 0
         if religion_type == 0:
             #nie byl zadeklarowany, wybierz losowo
             self.religion_type = random.randint(1, 3)
@@ -82,15 +83,12 @@ class MissionaryAgent(Agent):
                 if n.religion_type == 0 or n.faith < 0.3:
                     #dodatkowe prawodpodobienstwo przekazania wiary
                     #0.8 jako parametr - prawdoodobienstwo przekazania wiary przez misjo
-                    if random.random() > (1 - self.model.give_faith_prob):
+                    if random.random() > (1 - (self.model.give_faith_prob + self.temple_bonus)):
                         n.faith += np.random.normal(0.5, 0.1, 1)
                         n.religion_type = self.religion_type
                         if n.faith > 1:
                             n.faith = 1
                             
-    # def open_temple(self):
-    #     believers = compute_religion(self.model)
-    #     all_agents = self.model.schedule.get_agent_count()
         
                 
             
@@ -114,9 +112,33 @@ class Temple(Agent):
         self.religion_type = religion_type
         self.faith = 200 #bedzie odpowiadac promieniowi buffa
         
+    def give_buff(self):
+        #zwieksz prawdopodobienstwo przekazania wiary
+        #umacniaj wiare wiernych (jezeli w zasiegu to zyskuja wiare) 
+        
+        #dla sasiadow w zasiegu swiatyni
+        neighbors = self.model.space.get_neighbors(
+            self.pos, 
+            radius = self.faith,
+            include_center = True)
+        
+        if neighbors:
+            for n in neighbors:
+                #buff tylko dla tej religii
+                if n.religion_type == self.religion_type:
+                    if type(n) is MissionaryAgent:
+                        #buff dla misjonarza
+                        #10 procent wiecej przy przekazywaniu wiary
+                        n.temple_bonus = 0.1          
+                    elif type(n) is UnbelievingAgent:
+                        #buff dla wiernych
+                        n.temple_bonus = 1.1
+                
+                
+        
     def step(self):
-        pass
-        #print("SWIATYNIA!"*15)
+        self.give_buff()
+
 
     
 #swiatynia daje buffa na jakis obszar
@@ -132,6 +154,7 @@ class UnbelievingAgent(Agent):
             prob_age = int(np.random.normal(70, 20, 1))    
         self.age = prob_age 
         self.religion_type = religion_type
+        self.temple_bonus = 0
         if self.religion_type == 0:
             self.faith = 0
         else:
@@ -151,19 +174,19 @@ class UnbelievingAgent(Agent):
     def establish_faith(self):
         neighbors = self.model.space.get_neighbors(
             self.pos, 
-            radius = 30,
+            radius = 25,
             include_center = False)        
         
         co_believers = 0
         for n in neighbors:
-            if n.religion_type == self.religion_type:
+            if n.religion_type == self.religion_type: #swiatynia tez sie wlicza
                 co_believers += 1
                 
         if co_believers:
-            self.faith += co_believers*0.01
+            self.faith += co_believers*0.01 * self.temple_bonus
         else:
             #SPADEK WIARY - JAKO PARAMETR?
-            self.faith -= 0.001
+            self.faith -= 0.05
         
         if self.faith > 1:
             self.faith = 1

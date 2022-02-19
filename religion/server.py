@@ -45,7 +45,7 @@ def agent_draw(agent):
         portrayal["Shape"] = "circle"#"rect"
         #portrayal["w"] = 0.1
         #portrayal["h"] = 0.1
-        portrayal["r"] = 250
+        portrayal["r"] = agent.faith
         portrayal["Filled"] = False
         
     
@@ -75,6 +75,9 @@ model_params = {
     ),
     "temple": UserSettableParameter(
         "checkbox", "Świątynie", value=False
+    ),
+    "build_temple_ratio": UserSettableParameter(
+        "slider", "Procent wiernych do zbudowania świątyni [%]", 80, 30, 100
     ),
     }
 

@@ -38,7 +38,7 @@ def comp0(model):
 
 class ReligionModel(Model):
     """A model with some number of agents."""
-    def __init__(self, missionaries_N, unbelieving_N, width = 600, height= 600, give_faith_prob = 100, temple = False):
+    def __init__(self, missionaries_N, unbelieving_N, width = 600, height= 600, give_faith_prob = 100, temple = False, build_temple_ratio = 80):
         self.num_missionaries = missionaries_N
         self.num_unbelieving = unbelieving_N
         self.space = ContinuousSpace(width,height,True)
@@ -47,7 +47,8 @@ class ReligionModel(Model):
         self.current_id = 0
         self.give_faith_prob = give_faith_prob/100
         self.temple = temple
-        self.temple_counter = {1:0, 2:0, 3:0}
+        #self.temple_counter = {1:0, 2:0, 3:0}
+        self.build_temple_ratio = build_temple_ratio/100
 
         
         # Create missionaries
@@ -117,8 +118,7 @@ class ReligionModel(Model):
             all_agents = self.schedule.get_agent_count()
             for religion_type in believers:
                 #jezeli powyzej 40 procent calej populacji
-                print("RELIGIA TYPU: " , religion_type, "WSPÓLCZYNNIK :", believers[religion_type]/all_agents)
-                if believers[religion_type]/all_agents > 0.15:
+                if believers[religion_type]/all_agents > self.build_temple_ratio:
                     #init swiatyni 
                     #nie moze byc w poblizu tej samej swiatyni
                     

@@ -3,10 +3,10 @@ import random
 import numpy as np
 
 
-#oba agenty moglyby dziedziczyc po jednym typie 
+
 
 class MissionaryAgent(Agent):
-    """ An agent with fixed initial wealth."""
+
     def __init__(self, unique_id, model, religion_type = 0):
         super().__init__(unique_id, model)
         prob_age = 120
@@ -87,6 +87,11 @@ class MissionaryAgent(Agent):
                         n.religion_type = self.religion_type
                         if n.faith > 1:
                             n.faith = 1
+                            
+    # def open_temple(self):
+    #     believers = compute_religion(self.model)
+    #     all_agents = self.model.schedule.get_agent_count()
+        
                 
             
 
@@ -101,10 +106,22 @@ class MissionaryAgent(Agent):
             self.model.space.remove_agent(self)
             self.model.schedule.remove(self)
         
+        #jezeli templejsy to sprawdzac warunek
         
 class Temple(Agent):
-    pass
+    def __init__(self, unique_id, model, religion_type):
+        super().__init__(unique_id, model)
+        self.religion_type = religion_type
+        self.faith = 200 #bedzie odpowiadac promieniowi buffa
+        
+    def step(self):
+        pass
+        #print("SWIATYNIA!"*15)
 
+    
+#swiatynia daje buffa na jakis obszar
+#w stepie moze zwiekszyc zasieg 
+#w zaleznosci od wienrych 
 
 
 class UnbelievingAgent(Agent):
@@ -134,7 +151,7 @@ class UnbelievingAgent(Agent):
     def establish_faith(self):
         neighbors = self.model.space.get_neighbors(
             self.pos, 
-            radius = 5,
+            radius = 30,
             include_center = False)        
         
         co_believers = 0
@@ -145,7 +162,8 @@ class UnbelievingAgent(Agent):
         if co_believers:
             self.faith += co_believers*0.01
         else:
-            self.faith -= 0.08
+            #SPADEK WIARY - JAKO PARAMETR?
+            self.faith -= 0.001
         
         if self.faith > 1:
             self.faith = 1

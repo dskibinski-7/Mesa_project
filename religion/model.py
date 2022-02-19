@@ -2,17 +2,25 @@ from mesa import Model
 from mesa.datacollection import DataCollector
 from mesa.time import RandomActivation
 from mesa.space import ContinuousSpace
+import random
 
-from .agents import MissionaryAgent, UnbelievingAgent
+from .agents import MissionaryAgent, UnbelievingAgent, Temple 
 
-# def compute_religion_1(model):
-#     religion_believiers = {1:0, 2:0, 3:0, 0:0}
-#     all_agents = model.schedule.agents
-#     for agent in all_agents:
-#         religion_type_to_add = agent.religion_type
-#         religion_believiers[religion_type_to_add] += 1
+def compute_believers(model):
+    religion_believiers = {1:0, 2:0, 3:0}
+    all_agents = model.schedule.agents
+    for agent in all_agents:
+        religion_type_to_add = agent.religion_type
+        if religion_type_to_add:
+            religion_believiers[religion_type_to_add] += 1
+        else:
+            continue
 
-#     return religion_believiers
+    return religion_believiers
+    
+def get_random_missionair(model, religion_type):
+    return random.choice(list(a for a in model.schedule.agents if (a.religion_type is religion_type and type(a) is MissionaryAgent)))
+    
 def compute_religion(model, rel_type):
     return sum(1 for a in model.schedule.agents if a.religion_type is rel_type)
 
@@ -30,7 +38,7 @@ def comp0(model):
 
 class ReligionModel(Model):
     """A model with some number of agents."""
-    def __init__(self, missionaries_N, unbelieving_N, width = 600, height= 600, give_faith_prob = 100):
+    def __init__(self, missionaries_N, unbelieving_N, width = 600, height= 600, give_faith_prob = 100, temple = False):
         self.num_missionaries = missionaries_N
         self.num_unbelieving = unbelieving_N
         self.space = ContinuousSpace(width,height,True)
@@ -38,6 +46,8 @@ class ReligionModel(Model):
         self.running = True
         self.current_id = 0
         self.give_faith_prob = give_faith_prob/100
+        self.temple = temple
+        self.temple_counter = {1:0, 2:0, 3:0}
 
         
         # Create missionaries
@@ -100,3 +110,37 @@ class ReligionModel(Model):
     def step(self):
         self.schedule.step()
         self.datacollector.collect(self)
+        #jezeli opcja ze swiatyniami
+        #moze u misjonarza w klasie - skoro to on zaklada swiatynie
+        if self.temple:
+            believers = compute_believers(self)
+            all_agents = self.schedule.get_agent_count()
+            for religion_type in believers:
+                #jezeli powyzej 40 procent calej populacji
+                print("RELIGIA TYPU: " , religion_type, "WSPÓLCZYNNIK :", believers[religion_type]/all_agents)
+                if believers[religion_type]/all_agents > 0.15:
+                    #init swiatyni 
+                    #nie moze byc w poblizu tej samej swiatyni
+                    
+                    
+                    #x, y randomowego misjonarza danej religii
+                    x, y = get_random_missionair(self, religion_type).pos
+                    neighbors = self.space.get_neighbors(
+                        (x,y), 
+                        radius = 250,
+                        include_center = True)
+                    
+                    place_for_temple= True
+                    if neighbors:
+                        for neigh in neighbors:
+                            #jezeli w poblizu swiatynia tego samego typu to nie zakladaj swiatyni - przerwij petle
+                            if type(neigh) is Temple and neigh.religion_type == religion_type:
+                                place_for_temple = False
+                                break 
+                            
+                        if place_for_temple:      
+                            t = Temple(self.next_id(), self, religion_type)
+                            self.schedule.add(t)
+                            self.space.place_agent(t, (x, y))  
+                    
+                    

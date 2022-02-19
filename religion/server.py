@@ -3,7 +3,7 @@ from mesa.visualization.modules import ChartModule
 from mesa.visualization.UserParam import UserSettableParameter
 
 from .model import ReligionModel
-from .agents import MissionaryAgent, UnbelievingAgent
+from .agents import MissionaryAgent, UnbelievingAgent, Temple
 from .SimpleContinuousModule import SimpleCanvas
 
 def agent_draw(agent):
@@ -33,8 +33,21 @@ def agent_draw(agent):
         portrayal["Shape"] = "circle"
         portrayal["r"] = 1
         portrayal["Filled"] = True
-               
-    
+        
+    elif type(agent) is Temple:
+        if agent.religion_type == 1:
+            portrayal["Color"] = "Red"
+        elif agent.religion_type == 2:
+            portrayal["Color"] = "Green"
+        elif agent.religion_type == 3:
+            portrayal["Color"] = "Blue"    
+        
+        portrayal["Shape"] = "circle"#"rect"
+        #portrayal["w"] = 0.1
+        #portrayal["h"] = 0.1
+        portrayal["r"] = 250
+        portrayal["Filled"] = False
+        
     
     return portrayal
 
@@ -59,6 +72,9 @@ model_params = {
     "give_faith_prob": UserSettableParameter(
         "slider", "Prawdopodobieństwo przekazania wiary [%]", 100, 10, 100,
         description="Prawdopodobieństwo, z jakim misjonarzowi uda się nawrócić inną osobę",
+    ),
+    "temple": UserSettableParameter(
+        "checkbox", "Świątynie", value=False
     ),
     }
 

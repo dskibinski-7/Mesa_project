@@ -1,5 +1,6 @@
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import ChartModule
+from mesa.visualization.UserParam import UserSettableParameter
 
 from .model import ReligionModel
 from .agents import MissionaryAgent, BelieviengAgent, UnbelievingAgent
@@ -37,7 +38,8 @@ def agent_draw(agent):
     
     return portrayal
 
-canvas = SimpleCanvas(agent_draw, 700, 700)
+#bylo 700x700
+canvas = SimpleCanvas(agent_draw, 600, 600)
 
 chart = ChartModule(
     [{"Label": "1. Religion", "Color": "Red"}, 
@@ -47,8 +49,16 @@ chart = ChartModule(
     data_collector_name='datacollector'
 )
 
-#dodac chart dominacji religii
+model_params = {
+    "missionaries_N": UserSettableParameter(
+        "slider", "Początkowa liczba misjonarzy", 3, 1, 20
+    ),
+    "unbelieving_N": UserSettableParameter(
+        "slider", "Początkowa liczba ateistów", 1500, 500, 3000
+    ),
+    }
+
 server = ModularServer(ReligionModel,
                        [canvas, chart],
                        "Religion Model",
-                       {"missionaries_N":3, "unbelieving_N":1500, "width":700, "height":700})
+                       model_params)

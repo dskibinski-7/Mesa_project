@@ -21,12 +21,12 @@ class MissionaryAgent(Agent):
             self.religion_type = religion_type     
 
     def move(self):
-        random_walk_options = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,0), (0,1), (1,-1), (1,0), (1,1)]
+        random_walk_options = [(-5,-5), (-5,0), (-5,5), (0,-5), (0,0), (0,5), (5,-5), (5,0), (5,5)]
         #ruch na podstawie innych agentów - moze niewierzacych, ale to potem
         #sasiedzi:
         neighbors = self.model.space.get_neighbors(
             self.pos, 
-            radius = 25,
+            radius = 45,
             include_center = False)
         
         #wspolrzedne misjonarza
@@ -50,14 +50,14 @@ class MissionaryAgent(Agent):
                 dx, dy = 0, 0
     
                 if neigh_x > missionary_x:
-                    dx = 3
+                    dx = 5
                 elif neigh_x < missionary_x:
-                    dx = -3
+                    dx = -5
                     
                 if neigh_y > missionary_y:
-                    dy = 3
+                    dy = 5
                 elif neigh_y < missionary_y:
-                    dy = -3
+                    dy = -5
             else:
                 dx, dy = random.choice(random_walk_options)                       
         #jezeli brak sasiadow w promieniu to idz losowo
@@ -91,7 +91,7 @@ class MissionaryAgent(Agent):
         self.move()
         self.give_faith()
         #stazenie sie - w tym przypadku osonik (ok. 70) bedzie zyc 1750 stepow
-        self.age -= 0.04
+        self.age -= 0.08#0.04
         
         #death; no offspring
         if self.age < 0:
@@ -137,8 +137,8 @@ class UnbelievingAgent(Agent):
         
     
     def move(self):
-        dx = random.uniform(-1, 1)
-        dy = random.uniform(-1, 1)        
+        dx = random.uniform(-5, 5)
+        dy = random.uniform(-5, 5)        
         x, y = self.pos
         
         #test - zmieniony dx
@@ -169,7 +169,7 @@ class UnbelievingAgent(Agent):
                 
     def step(self):
         self.move()
-        self.age-= 0.04
+        self.age-= 0.08#0.04
         #w zaleznosci od sasiadow - wiara umacnia sie lub oslabia
         #potem update z kosciolem?
         self.establish_faith()

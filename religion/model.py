@@ -68,7 +68,6 @@ class ReligionModel(Model):
             present_missionaries_with_same_religion = list(a for a in self.schedule.agents if a.religion_type is rel_type)
             self.schedule.add(a)
             
-            #pojebane w chuj cos sie dzieje tu 
             # #jezeli ten sam misjonarz - to w miare blisko
             if len(present_missionaries_with_same_religion)>0:
                 #print(present_missionaries_with_same_religion)
@@ -96,8 +95,7 @@ class ReligionModel(Model):
             self.space.place_agent(a, (x, y))   
         
         
-        #dziala, ale bardzo spowalnia apke 
-        #mialem rozwiazanei ze slownikiem ale nie dzialalo (ktore liczylo wszystkich agentow na raz)
+
         self.datacollector = DataCollector(model_reporters=
             {
                 "1. Religion": comp1,
@@ -117,7 +115,7 @@ class ReligionModel(Model):
             believers = compute_believers(self)
             all_agents = self.schedule.get_agent_count()
             for religion_type in believers:
-                #jezeli powyzej 40 procent calej populacji
+                #jezeli powyzej x procent calej populacji
                 if believers[religion_type]/all_agents > self.build_temple_ratio:
                     #init swiatyni 
                     #nie moze byc w poblizu tej samej swiatyni

@@ -64,20 +64,20 @@ chart = ChartModule(
 
 model_params = {
     "missionaries_N": UserSettableParameter(
-        "slider", "Początkowa liczba misjonarzy", 3, 1, 20
+        "slider", "Początkowa liczba misjonarzy", 10, 1, 20
     ),
     "unbelieving_N": UserSettableParameter(
         "slider", "Początkowa liczba ateistów", 1500, 500, 3000
     ),
     "give_faith_prob": UserSettableParameter(
-        "slider", "Prawdopodobieństwo przekazania wiary [%]", 100, 10, 100,
+        "slider", "Prawdopodobieństwo przekazania wiary [%]", 80, 10, 100,
         description="Prawdopodobieństwo, z jakim misjonarzowi uda się nawrócić inną osobę",
     ),
     "temple": UserSettableParameter(
         "checkbox", "Świątynie", value=False
     ),
     "build_temple_ratio": UserSettableParameter(
-        "slider", "Procent wiernych do zbudowania świątyni [%]", 80, 30, 100
+        "slider", "Procent wiernych do zbudowania świątyni [%]", 50, 10, 100
     ),
     }
 
